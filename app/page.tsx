@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback, KeyboardEvent } from "react";
 import ChatMessage, { Message } from "@/components/ChatMessage";
 import TypingIndicator from "@/components/TypingIndicator";
+import LoginPage from "@/components/LoginPage";
 
 const WELCOME_MESSAGE: Message = {
   id: "welcome",
@@ -11,7 +12,12 @@ const WELCOME_MESSAGE: Message = {
     "Hi! I'm Friday, CrownRing's jewelry assistant. Ask me anything about our collections, materials, sizing, or care guides.",
 };
 
+const AUTH_KEY = "friday_user";
+
 export default function ChatPage() {
+  const [user, setUser] = useState<string | null>(null);
+  const [authReady, setAuthReady] = useState(false);
+
   const [messages, setMessages] = useState<Message[]>([WELCOME_MESSAGE]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -19,10 +25,35 @@ export default function ChatPage() {
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
+  // Read persisted session once on mount (must be inside useEffect — localStorage
+  // is browser-only and unavailable during SSR/Vercel build)
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(AUTH_KEY);
+      if (stored) setUser(stored);
+    } catch {
+      // localStorage blocked (private browsing restrictions, etc.) — stay logged out
+    } finally {
+      setAuthReady(true);
+    }
+  }, []);
+
   // Auto-scroll to bottom on new messages
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);
+
+  const handleLogin = (username: string) => {
+    localStorage.setItem(AUTH_KEY, username);
+    setUser(username);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem(AUTH_KEY);
+    setUser(null);
+    setMessages([WELCOME_MESSAGE]);
+    setInput("");
+  };
 
   const sendMessage = useCallback(async () => {
     const query = input.trim();
@@ -88,6 +119,10 @@ export default function ChatPage() {
     el.style.height = `${Math.min(el.scrollHeight, 120)}px`;
   };
 
+  // Show login until localStorage has been read client-side.
+  // Render LoginPage (not null) so Vercel always shows the dark background — never a blank white screen.
+  if (!authReady || !user) return <LoginPage onLogin={handleLogin} />;
+
   return (
     <div className="flex flex-col h-full bg-navy">
       {/* ── Header ── */}
@@ -109,10 +144,19 @@ export default function ChatPage() {
             </p>
           </div>
 
-          {/* Online indicator */}
-          <div className="ml-auto flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.6)] animate-pulse" />
-            <span className="text-slate-500 text-xs">Online</span>
+          {/* Right side: online indicator + logout */}
+          <div className="ml-auto flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.6)] animate-pulse" />
+              <span className="text-slate-500 text-xs hidden sm:block">Online</span>
+            </div>
+
+            <button
+              onClick={handleLogout}
+              className="text-slate-500 hover:text-slate-300 text-xs border border-navy-border hover:border-slate-600 rounded-lg px-3 py-1.5 transition-colors duration-150"
+            >
+              Logout
+            </button>
           </div>
         </div>
       </header>
