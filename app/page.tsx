@@ -58,6 +58,13 @@ export default function ChatPage() {
     const query = input.trim();
     if (!query || isLoading) return;
 
+    // Snapshot history before adding the new user message.
+    // Exclude error messages and the static welcome greeting — only send
+    // real user/assistant turns so the model has clean context.
+    const history = messages
+      .filter((m) => !m.isError && m.id !== "welcome")
+      .map(({ role, content }) => ({ role, content }));
+
     const userMessage: Message = {
       id: crypto.randomUUID(),
       role: "user",
@@ -72,7 +79,7 @@ export default function ChatPage() {
       const res = await fetch("https://crownring.app.n8n.cloud/webhook/friday", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({ query, history }),
       });
 
       const data = await res.json();
@@ -101,7 +108,7 @@ export default function ChatPage() {
       setIsLoading(false);
       inputRef.current?.focus();
     }
-  }, [input, isLoading]);
+  }, [input, isLoading, messages]);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
