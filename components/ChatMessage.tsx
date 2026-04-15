@@ -32,7 +32,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
     <div className="flex items-start gap-3 mb-4">
       {/* Friday avatar */}
       <div className="flex-shrink-0 w-8 h-8 rounded-full bg-navy-surface border border-gold/30 flex items-center justify-center shadow-sm">
-        <span className="text-gold text-xs font-semibold select-none">F</span>
+        <span className="text-gold text-xs font-semibold select-none">CR</span>
       </div>
 
       <div className="max-w-[75%] lg:max-w-[60%]">

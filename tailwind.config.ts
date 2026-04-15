@@ -22,7 +22,7 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
+        sans: ["Playfair Display", "Georgia", "serif"],
       },
       keyframes: {
         bounce: {

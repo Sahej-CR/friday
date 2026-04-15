@@ -8,8 +8,7 @@ import LoginPage from "@/components/LoginPage";
 const WELCOME_MESSAGE: Message = {
   id: "welcome",
   role: "assistant",
-  content:
-    "Hi! I'm Friday, CrownRing's jewelry assistant. Ask me anything about our collections, materials, sizing, or care guides.",
+  content: "Welcome to CrownRing. How may I assist you today?",
 };
 
 const AUTH_KEY = "friday_user";
@@ -139,9 +138,6 @@ export default function ChatPage() {
             <h1 className="text-white font-semibold text-base leading-tight tracking-wide">
               CrownRing
             </h1>
-            <p className="text-gold/80 text-xs font-light tracking-widest uppercase">
-              Friday — Jewelry Assistant
-            </p>
           </div>
 
           {/* Right side: online indicator + logout */}
