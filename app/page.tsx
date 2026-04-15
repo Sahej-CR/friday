@@ -126,40 +126,35 @@ export default function ChatPage() {
     <div className="flex flex-col h-full bg-navy">
       {/* ── Header ── */}
       <header className="flex-shrink-0 border-b border-navy-border bg-navy-card/80 backdrop-blur-sm">
-        <div className="max-w-3xl mx-auto px-4 py-4 flex items-center gap-4">
-          {/* Logo mark */}
-          <div className="w-10 h-10 rounded-full border border-gold/50 flex items-center justify-center shadow-[0_0_12px_rgba(201,168,76,0.15)]">
-            <span className="text-gold font-semibold text-sm tracking-widest">
-              CR
-            </span>
-          </div>
+        <div className="relative max-w-3xl mx-auto px-4 py-4 flex items-center justify-center">
+          {/* Centered title */}
+          <h1 className="text-white font-semibold text-base tracking-wide">
+            CrownRing
+          </h1>
 
-          <div>
-            <h1 className="text-white font-semibold text-base leading-tight tracking-wide">
-              CrownRing
-            </h1>
-          </div>
-
-          {/* Right side: online indicator + logout */}
-          <div className="ml-auto flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.6)] animate-pulse" />
-              <span className="text-slate-500 text-xs hidden sm:block">Online</span>
-            </div>
-
-            <button
-              onClick={handleLogout}
-              className="text-slate-500 hover:text-slate-300 text-xs border border-navy-border hover:border-slate-600 rounded-lg px-3 py-1.5 transition-colors duration-150"
-            >
-              Logout
-            </button>
-          </div>
+          {/* Logout pinned to the right */}
+          <button
+            onClick={handleLogout}
+            className="absolute right-4 text-slate-500 hover:text-slate-300 text-xs border border-navy-border hover:border-slate-600 rounded-lg px-3 py-1.5 transition-colors duration-150"
+          >
+            Logout
+          </button>
         </div>
       </header>
 
       {/* ── Messages ── */}
-      <main className="flex-1 overflow-y-auto chat-scroll">
-        <div className="max-w-3xl mx-auto px-4 py-6">
+      <main className="flex-1 overflow-y-auto chat-scroll relative">
+        {/* Watermark logo — centered behind messages */}
+        <div className="pointer-events-none fixed inset-0 flex items-center justify-center" style={{ zIndex: 0 }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/crownring-logo.png"
+            alt=""
+            style={{ width: "200px", opacity: 0.08 }}
+          />
+        </div>
+
+        <div className="relative max-w-3xl mx-auto px-4 py-6" style={{ zIndex: 1 }}>
           {messages.map((msg) => (
             <ChatMessage key={msg.id} message={msg} />
           ))}
