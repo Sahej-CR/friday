@@ -1,3 +1,5 @@
+import ReactMarkdown from "react-markdown";
+
 export type MessageRole = "user" | "assistant";
 
 export interface Message {
@@ -30,7 +32,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
 
   return (
     <div className="flex items-start gap-3 mb-4">
-      {/* Friday avatar */}
+      {/* Avatar */}
       <div className="flex-shrink-0 w-8 h-8 rounded-full bg-navy-surface border border-gold/30 flex items-center justify-center shadow-sm">
         <span className="text-gold text-xs font-semibold select-none">CR</span>
       </div>
@@ -43,13 +45,15 @@ export default function ChatMessage({ message }: ChatMessageProps) {
               : "border-navy-border"
           }`}
         >
-          <p
-            className={`text-sm leading-relaxed whitespace-pre-wrap ${
-              message.isError ? "text-red-400" : "text-slate-200"
-            }`}
-          >
-            {message.content}
-          </p>
+          {message.isError ? (
+            <p className="text-sm leading-relaxed text-red-400">
+              {message.content}
+            </p>
+          ) : (
+            <div className="markdown text-sm leading-relaxed text-slate-200">
+              <ReactMarkdown>{message.content}</ReactMarkdown>
+            </div>
+          )}
         </div>
       </div>
     </div>
